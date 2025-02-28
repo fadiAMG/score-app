@@ -1,0 +1,31 @@
+
+services:
+  client:
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://server:8080
+    command: npm run dev -- --host
+    depends_on:
+      - server
+
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+      - ./scores.csv:/scores.csv
+    environment:
+      - PORT=8080
+      - NODE_ENV=development
+      - CORS_ORIGIN=http://localhost:3000
